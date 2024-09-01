@@ -10,40 +10,40 @@ import ru.sl.jsdranalys.common.Multiplicity;
  * 
  * @author SergeyLomsky
  */
-public enum CountdownType implements Annotation  {
-	
-	SHORTREAL(1,Multiplicity.REAL,"8 бит - действительные"){
+public enum CountdownType implements Annotation {
+
+    SHORTREAL(1, Multiplicity.REAL, "8 бит - действительные") {
         public double getValue(ByteBuffer buffer) {
             return (double) buffer.get();
         }
-	},
-	INTREAL(2, Multiplicity.REAL, "16 бит - действительные") {
+    },
+    INTREAL(2, Multiplicity.REAL, "16 бит - действительные") {
         public double getValue(ByteBuffer buffer) {
             return (double) buffer.getChar();
         }
-	},
-	LONGINTREAL(4,Multiplicity.REAL, "32 бита - действительные"){
+    },
+    LONGINTREAL(4, Multiplicity.REAL, "32 бита - действительные") {
         public double getValue(ByteBuffer buffer) {
             return (double) buffer.getInt();
         }
-	},
-	SHORTCOMPLEX(1, Multiplicity.COMPLEX, "8 бит - комплексные"){
+    },
+    SHORTCOMPLEX(1, Multiplicity.COMPLEX, "8 бит - комплексные") {
         public double getValue(ByteBuffer buffer) {
-            return (double ) buffer.get();
+            return (double) buffer.get();
         }
-	},
-	INTCOMPLEX(2, Multiplicity.COMPLEX, "16 бит - комплексные") {
+    },
+    INTCOMPLEX(2, Multiplicity.COMPLEX, "16 бит - комплексные") {
         public double getValue(ByteBuffer buffer) {
-            return  (double) buffer.getChar();
+            return (double) buffer.getChar();
         }
-	},
-	LONGINTCOMPLEX(4, Multiplicity.COMPLEX, "32 бита - комплексные"){
+    },
+    LONGINTCOMPLEX(4, Multiplicity.COMPLEX, "32 бита - комплексные") {
         public double getValue(ByteBuffer buffer) {
             return (double) buffer.getInt();
         }
-	};
-	
-	private Multiplicity multiplicity;
+    };
+
+    private Multiplicity multiplicity;
     private int length;
     private String annotation;
 
@@ -52,20 +52,20 @@ public enum CountdownType implements Annotation  {
         this.multiplicity = multiplicity;
         this.annotation = annotation;
     }
-    
+
     @Override
     public String getDisplayName() {
         return annotation;
     }
-    
-	public Multiplicity getMultiplicity() {
-		return multiplicity;
-	}
-	
-	public int getAtomLength() {
-		return length*(multiplicity.ordinal()+1);
-	}
-	
+
+    public Multiplicity getMultiplicity() {
+        return multiplicity;
+    }
+
+    public int getAtomLength() {
+        return length * (multiplicity.ordinal() + 1);
+    }
+
     /**
      * читает из буфера заданное количество байт и преобразует в тип double
      * 
@@ -73,5 +73,5 @@ public enum CountdownType implements Annotation  {
      * @return
      */
     public abstract double getValue(ByteBuffer buffer);
-    
+
 }
