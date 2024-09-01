@@ -16,4 +16,10 @@
       </plugin>
     </plugins>
   </build>
+  <scm>
+    <connection>
+      scm:git:https://github.com/SergeyLomsky/jsdranalys.git
+    </connection>
+  </scm>
+
 </project>
