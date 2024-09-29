@@ -61,7 +61,7 @@ public class DSVparser {
 	 * @return
 	 */
 	public static double[] extactRow(String row, boolean errIgnore) {
-		String[] sValues = row.replace(',', '.').split("\\s+"); 
+		String[] sValues = row.trim().replace(',', '.').split("\\s+"); 
 		int counter = 0;
 		double [] result = new double[sValues.length];
 		for(String s:sValues) {
@@ -77,7 +77,7 @@ public class DSVparser {
 	
 	
 	public static void main(String[] args) {
-		String d = "123.45 35 \n67.8 34 \n45.001 55";
+		String d = "123.45 35 \n 67.8 34 \n 45.001 55";
 		
 		DSVparser parser = new DSVparser(d);
 		double [][] arr = null;
