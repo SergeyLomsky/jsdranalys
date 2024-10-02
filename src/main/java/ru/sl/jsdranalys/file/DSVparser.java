@@ -1,6 +1,10 @@
 package ru.sl.jsdranalys.file;
 
-import java.util.Arrays;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 /**
  * Класс перевода массива данных хранящихся в формате DSV
@@ -12,12 +16,30 @@ public class DSVparser {
 	
 	private String[] strArray;
 	
-	boolean errIgnore = false;
+	private boolean errIgnore = false;
 	
 	private int numCol = 2;
 	
+	/**
+	 * парсер из данных в памяти
+	 * @param inData
+	 */
 	public DSVparser(String inData) {
 		this.strArray = inData.split("\n");	
+	}
+	
+	/**
+	 * парсер из данных хранящихся в памяти
+	 * @param file
+	 * @throws IOException
+	 */
+	public DSVparser(File file) throws IOException {
+		List<String> rows = new ArrayList<String>();
+		Scanner scanner = new Scanner(file);
+		while (scanner.hasNext()) {
+			rows.add(scanner.nextLine());
+		}
+		strArray = (String[]) rows.toArray();
 	}
 
 	/**
@@ -73,23 +95,6 @@ public class DSVparser {
 			}
 		}
 		return result; 
-	}
-	
-	
-	public static void main(String[] args) {
-		String d = "123.45 35 \n 67.8 34 \n 45.001 55";
-		
-		DSVparser parser = new DSVparser(d);
-		double [][] arr = null;
-		try {
-			arr = parser.parse();
-		}catch (Exception e) {
-			System.err.println(e);
-		}
-		for (int i = 0; i < arr.length; i++) {
-			System.out.println(Arrays.toString(arr[i]));
-		}
-		
 	}
 	
 }
