@@ -33,5 +33,28 @@
 		}
 		System.out.println(s);	
 	}
+//изменение порядка бит для БПФ
+	public static int[] countBitMirror(int n) {
+		int [] temp = IntStream.range(0, n).toArray();
+		
+		int pow = pow2(n);
+		
+		for (int i = 0; i < temp.length; i++) {
+			int curr = temp[i];
+			int out = 0;
+			int maskl = 1;				
+			for (int j = 0; j < pow-2; j++) {
+				maskl <<= 1;
+			}
+			for (int j = 0; j < pow; j++) {
+				if ((curr & 1) == 1) out += maskl;
+				maskl >>= 1;
+				curr >>= 1;
 
+			}
+			temp[i] = out;
+		}
+		
+		return temp;
+	}
 
