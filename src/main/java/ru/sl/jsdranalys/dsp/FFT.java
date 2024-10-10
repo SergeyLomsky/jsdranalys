@@ -56,8 +56,8 @@ public class FFT {
 		final double iB = iValues[IB];
 		
 		rValues[IA] = rA + rB;
-		rValues[IB] = rA - rB;
 		iValues[IA] = iA + iB;
+		rValues[IB] = rA - rB;
 		iValues[IB] = iA - iB;
 	}
 	
@@ -92,41 +92,91 @@ public class FFT {
 	public void calculate(double [] reData, double [] imData) {
 		
 		int arrCount = reData.length;
-		//реверс значений (зеркальный бинарный поворот индекса)
-		int pow = MathUtilites.pow2(arrCount-1);		
-		for (int i = 0; i < arrCount >> 1; i++) {
-			int curr = i;
-			int out = 0;
-			int mask = MASK[pow-1];
-			for (int j = 0; j < pow; j++) {
-				if ((curr & 1) == 1)
-					out += mask;
-				mask >>= 1;
-				curr >>= 1;
-			}
-			double temp = reData[i];
-			reData[i] = reData[out];
-			reData[out] = temp;
-			temp = imData[i];
-			imData[i] = imData[out];
-			imData[out] = temp;
-		}
+
+        int halfCount = arrCount >> 1;
+
+        int j = 0;
+        for (int i = 0; i < arrCount; i++) {
+            if (i < j) {
+                // swap indices i & j
+                double temp = reData[i];
+                reData[i] = reData[j];
+                reData[j] = temp;
+
+                temp = imData[i];
+                imData[i] = imData[j];
+                imData[j] = temp;
+            }
+
+            int k = halfCount;
+            while (k <= j && k > 0) {
+                j -= k;
+                k >>= 1;
+            }
+            j += k;
+        }
+			
 		//расчет "бабочек"
 		for (int i = 0; i < arrCount; i += RSTEP) {
 			calcFourValues(reData, imData, i);
 		}
 		
-		
-	}
+        int oldLogCnt = 2;
+        for (int count = RSTEP;count < arrCount;) {
+            int currCnt = count << 1;
+            int logCnt = oldLogCnt + 1;
+            double wR = EXP2N_COS[logCnt];
+            double wI = EXP2N_SIN[logCnt];
 
+            for (int beginIndex = 0; beginIndex < arrCount; beginIndex += currCnt) {
+                int endIndex = beginIndex + count;
+
+                double wDataR = 1;
+                double wDataI = 0;
+
+                for (int k = 0; k < count; k++) {
+                    double bDataR = reData[beginIndex + k];
+                    double bDataI = imData[beginIndex + k];
+                    double eDataR = reData[endIndex + k];
+                    double eDataI = imData[endIndex + k];
+                    double complMulR = wDataR * eDataR - wDataI * eDataI;
+                    double complMulI = wDataR * eDataI + wDataI * eDataR;
+
+                    reData[beginIndex + k] = bDataR + complMulR;
+                    imData[beginIndex + k] = bDataI + complMulI;
+                    reData[endIndex + k] = bDataR - complMulR;
+                    imData[endIndex + k] = bDataI - complMulI;
+
+                    double tempDataR = wDataR * wR - wDataI * wI;
+                    double tempDataI = wDataR * wI + wDataI * wR;
+                    wDataR = tempDataR;
+                    wDataI = tempDataI;
+                }
+            }
+            count = currCnt;
+            oldLogCnt = logCnt;
+        }
+
+	}
+	
+	 
+	 
 	public static void main(String[] args) {
-		double [] re = {1,2,3,4,5,6,7,8};
-		double [] im = {1,2,3,4,5,6,7,8};
+		double [] re = new double [256];
+		double [] im = new double [256];
+		for (int i = 0; i < im.length; i++) {
+			re[i] = Math.cos(i*2*Math.PI/16);
+			im[i] = Math.sin(i*2*Math.PI/16);
+		}
+		
+		
 		FFT fft = new FFT();
 		fft.calculate(re, im);
-		System.out.println(Arrays.toString(re));
-		System.out.println(Arrays.toString(im));
-	
+		for (int i = 0; i < im.length; i++) {
+			System.out.println(i+" "+re[i]+" "+im[i]);
+		}
+		
+
 	}
 
 }
