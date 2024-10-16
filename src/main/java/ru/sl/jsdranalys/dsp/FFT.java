@@ -137,10 +137,7 @@ public class FFT {
                     imData[beginIndex + k] = bData.image + mulResult.image;
                     reData[endIndex + k] = bData.real - mulResult.real;
                     imData[endIndex + k] = bData.image - mulResult.image;
-                    Complex temp = multiply(wData, w);
-                    wData.real = temp.real;
-                    wData.image = temp.image;
-
+                    wData = multiply(wData, w);
                 }
             }
             count = currCnt;
