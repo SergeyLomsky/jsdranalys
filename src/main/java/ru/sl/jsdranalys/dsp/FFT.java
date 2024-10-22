@@ -78,7 +78,6 @@ public class FFT {
         int j = 0;
         for (int i = 0; i < arrCount; i++) {
             if (i < j) {
-                // swap indices i & j
                 double temp = reData[i];
                 reData[i] = reData[j];
                 reData[j] = temp;
@@ -126,7 +125,22 @@ public class FFT {
         }
 
     }
+    
+    public static void  normalizeByCount(final double[] reData, final double[] imData) {
+        for (int i = 0; i < reData.length; i++) {
+            reData[i] = reData[i]/reData.length;
+            imData[i] = imData[i]/imData.length;
+        }       
+    }
 
+    public static double[] calculateAmplitude(final double[] reData, final double[] imData) {
+        double [] res = new double [reData.length];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = Math.sqrt(reData[i]*reData[i]+imData[i]*imData[i]);
+        }
+        return res;      
+    }
+    
     private static Complex multiply(Complex first, Complex second) {
         double real = first.real * second.real - first.image * second.image;
         double image = first.real * second.image + first.image * second.real;
